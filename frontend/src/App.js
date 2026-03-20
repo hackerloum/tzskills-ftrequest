@@ -114,7 +114,10 @@ export default function App() {
               <div className="state-container state-container--error">
                 <p className="state-title">Couldn&apos;t load data</p>
                 <p className="state-text">{error}</p>
-                <p className="state-hint">Check the API (port 5000) and <code className="inline-code">backend/.env</code>.</p>
+                <p className="state-hint">
+                  On Render: set <code className="inline-code">DB_*</code> env vars and open{' '}
+                  <code className="inline-code">/api/health/db</code> to see the DB error.
+                </p>
               </div>
             )}
 

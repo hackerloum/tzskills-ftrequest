@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
+const db = require('./config/db');
 const featuresRouter = require('./routes/features');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -22,6 +23,21 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'ok', timestamp: new Date() });
+});
+
+/** Ping MySQL — open this URL in the browser to see the real DB error (Render debugging). */
+app.get('/api/health/db', async (req, res) => {
+  try {
+    await db.query('SELECT 1');
+    res.json({ ok: true, message: 'database ok' });
+  } catch (err) {
+    res.status(500).json({
+      ok: false,
+      message: err.message,
+      code: err.code,
+      sqlMessage: err.sqlMessage,
+    });
+  }
 });
 
 app.use('/api/features', featuresRouter);
@@ -51,6 +67,9 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`listening ${PORT}`);
+  if (process.env.NODE_ENV === 'production' && (!process.env.DB_HOST || process.env.DB_HOST === 'localhost')) {
+    console.warn('Set DB_HOST to your cloud MySQL hostname in Render (localhost will not work).');
+  }
   if (hasFrontendBuild) {
     console.log(`serving UI from ${buildDir}`);
   } else {

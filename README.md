@@ -90,6 +90,8 @@ Run `sql/schema.sql` on that **remote** database once (same as local), or the ap
 3. **Wrong password or database name** — double-check in the provider’s dashboard.
 4. **Logs** — Render → your service → **Logs** — look for `ECONNREFUSED`, `Access denied`, or SSL errors when `/api/features` runs.
 
+5. **Debug URL** — after deploy, open `https://YOUR-APP.onrender.com/api/health/db` in the browser. It returns JSON with the real MySQL error (`message` / `sqlMessage`) if the DB is unreachable.
+
 Optional env **`FRONTEND_BUILD_PATH`** only if you use a custom static build path.
 
 ---
