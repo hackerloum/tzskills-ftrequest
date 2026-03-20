@@ -56,6 +56,29 @@ npm start
 
 Opens on 3000 and proxies `/api` to 5000.
 
+**Production-style (API + UI on one port)** — build React, then run the server from `backend`; Express serves `frontend/build` and the API:
+
+```bash
+cd frontend && npm run build && cd ../backend && npm start
+```
+
+Open `http://localhost:5000`. If `frontend/build` is missing, `/` stays a small JSON hint instead of the app.
+
+---
+
+## Deploy on Render (one Web Service)
+
+Use **Web Service** (not Static Site).
+
+**Root directory** must be **empty** (repo root with `frontend/` and `backend/`). If it’s set to `backend`, the React build never runs and `/` is only API JSON.
+
+- **Build command:** `npm install && npm run build` (uses root `package.json`)
+- **Start command:** `npm start`
+
+**Database:** hosted MySQL elsewhere; set `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` in Environment. Run `sql/schema.sql` once on that DB.
+
+Check deploy **Logs** for `serving UI from …` — if you see `no UI build`, the frontend didn’t build. Optional env **`FRONTEND_BUILD_PATH`** if you use a non-standard build folder.
+
 ---
 
 ## API (short version)

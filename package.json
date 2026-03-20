@@ -1,0 +1,11 @@
+{
+  "name": "feature-tracker",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "npm install --prefix frontend && npm run build --prefix frontend && npm install --prefix backend",
+    "start": "node backend/server.js"
+  }
+}
