@@ -75,9 +75,22 @@ Use **Web Service** (not Static Site).
 - **Build command:** `npm install && npm run build` (uses root `package.json`)
 - **Start command:** `npm start`
 
-**Database:** hosted MySQL elsewhere; set `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` in Environment. Run `sql/schema.sql` once on that DB.
+**Database:** hosted MySQL elsewhere. In Render → **Environment**, set at least:
 
-Check deploy **Logs** for `serving UI from …` — if you see `no UI build`, the frontend didn’t build. Optional env **`FRONTEND_BUILD_PATH`** if you use a non-standard build folder.
+- `DB_HOST` — hostname from your DB provider (not `localhost`)
+- `DB_USER`, `DB_PASSWORD`, `DB_NAME`
+- `DB_PORT` — only if it’s not 3306
+
+Run `sql/schema.sql` on that **remote** database once (same as local), or the app will 500.
+
+**If the UI loads but you see “Couldn’t load data” / Internal Server Error:** the API can’t talk to MySQL. Common fixes:
+
+1. **SSL** — many cloud MySQL hosts require it. Add: `DB_SSL` = `true`. If it still fails, add `DB_SSL_REJECT_UNAUTHORIZED` = `false` (some providers use certs Node doesn’t trust by default).
+2. **Firewall / access** — allow **incoming** connections from the internet (or from Render’s IPs if the provider has an allowlist).
+3. **Wrong password or database name** — double-check in the provider’s dashboard.
+4. **Logs** — Render → your service → **Logs** — look for `ECONNREFUSED`, `Access denied`, or SSL errors when `/api/features` runs.
+
+Optional env **`FRONTEND_BUILD_PATH`** only if you use a custom static build path.
 
 ---
 
