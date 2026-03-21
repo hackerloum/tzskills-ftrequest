@@ -31,11 +31,18 @@ app.get('/api/health/db', async (req, res) => {
     await db.query('SELECT 1');
     res.json({ ok: true, message: 'database ok' });
   } catch (err) {
+    const refused = err.code === 'ECONNREFUSED';
     res.status(500).json({
       ok: false,
-      message: err.message,
+      message: err.message || (refused ? 'Connection refused — nothing listening on host:port' : 'Error'),
       code: err.code,
       sqlMessage: err.sqlMessage,
+      address: err.address,
+      port: err.port,
+      ...(refused && {
+        hint:
+          'ECONNREFUSED: wrong DB_HOST/DB_PORT, or DB still localhost, or firewall. On Render use your provider public hostname (not localhost).',
+      }),
     });
   }
 });
